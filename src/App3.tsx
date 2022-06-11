@@ -27,7 +27,7 @@ function App() {
       // if we ever unmount / destroy this component instance, clear the timeout
       return () => clearTimeout(timeID);
    }, []);
-
+   
    return (
       <div className='App'>
          <div className='score'>You have {balance} antimatters.</div>
