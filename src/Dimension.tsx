@@ -1,20 +1,32 @@
 import { useState, useEffect } from 'react';
 
-export default function Dimension(props) {
-   const { balance, firstDimCount, setFirstDimCount, setBalance, factor } = props;
+type DimProps = {
+   balance: number;
+   dimCount: number;
+   setDimCount: (fn: (dim: number) => void) => void;
+   setBalance: (fn: ((balance: number) => void) | number) => void;
+   factor: number;
+   children: string;
+};
+export default function Dimension(props: DimProps) {
+   const { balance, dimCount, setDimCount, setBalance, factor } = props;
 
    const handleFirstDimBuy = () => {
       if (balance >= factor) {
-         setFirstDimCount(firstDimCount => firstDimCount + factor / 10);
+         setDimCount(dimCount => dimCount + 1);
          setBalance(balance => balance - factor);
       }
    };
    return (
       <>
-         <div>You have {firstDimCount} First Dimension x2.0</div>
+         <br />
+         <div>
+            You have {dimCount} {props.children.split(" ")[0]} {factor / 10}x
+         </div>
          <button onClick={handleFirstDimBuy} disabled={balance < factor}>
-            Buy 1. Dimension
+            {props.children}
          </button>
+         <br />
       </>
    );
 }
