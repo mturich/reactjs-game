@@ -19,10 +19,17 @@
    background-color: beige;
 }
 
-.gridContainer {
+.gridContainer4Cols {
    display: grid;
    grid-template-columns: repeat(4, 1fr);
    gap: 10px;
+   grid-auto-rows: minmax(40px, auto);
+}
+
+.gridContainer3Rows {
+   display: grid;
+   grid-template-rows: repeat(3, 1fr);
+   gap: 4px;
    grid-auto-rows: minmax(40px, auto);
 }
 
@@ -36,9 +43,22 @@
 
 .btn {
    font-size: calc(10px + 1vmin);
+   padding: 0.2em 1em 0.2em 1em;
+   margin: 0 0.5rem;
    border: 1px black solid;
-   border-radius: 10px;
+   border-radius: 6px;
    background-color: rgb(240, 238, 238);
+}
+.btn:hover {
+   background-image: linear-gradient(to right, #29323c, #485563, #2b5876, #4e4376);
+   box-shadow: 0 4px 15px 0 rgba(45, 54, 65, 0.75);
+}
+.btn:disabled{
+   background: initial;
+   box-shadow: initial;
+}
+.sm{
+   font-size: calc(10px + 0.5vmin);
 }
 
 .btn:disabled{
