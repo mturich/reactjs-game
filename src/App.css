@@ -41,6 +41,11 @@
    text-align: center;
 }
 
+.cols-2{
+   grid-template-columns: repeat(3, 1fr);
+   margin: auto 5rem;
+}
+
 .btn {
    font-size: calc(10px + 1vmin);
    padding: 0.2em 1em 0.2em 1em;

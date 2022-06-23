@@ -11,12 +11,22 @@ type DimProps = {
 };
 
 function App() {
+   // tried to load the object data with the first opening of the page and then assign it to all the state but this was not sucessful. Loading ervery prop this way is very slow. CUrrently I do not know how to get the load data 
+
+   // the 2. thing I did not know how to do was the Buy max button. A while loop crashed the browser :( maybe it works recursive
+   const dataRef = useRef(() => JSON.parse(localStorage.getItem('data')) ?? {});
+
    const timerExpiredCallback = useRef(() => {});
    const clockSpeedRef = useRef(2000);
-   const timerId = useRef(-1);
-   const toSaveId = useRef(-1);
+   const timerIdRef = useRef(-1);
+   const idRef = useRef(-1);
+
+   // const dataRef = useRef({});
    const [tickspeedPrice, setTickspeedPrice] = useState(10);
-   const [antimatter, setAntimatter] = useState(200);
+   const [antimatter, setAntimatter] = useState(1000);
+   const [resetGameCounter, setResetGameCounter] = useState(2);
+   const [galaxyCounter, setGalaxyCounter] = useState(0);
+   const [highesDim, setHighesDim] = useState(0);
 
    const [firstDimFactor, setFirstDimFactor] = useState(1.1);
    const [firstDimCount, setFirstDimCount] = useState(0);
@@ -35,47 +45,15 @@ function App() {
    // if the component updates, replace the timeout callback with one that references the new
    //   values of `count` and `firstDimCount`
 
-   useEffect(() => {
-      const startSave = () => {
-         timerId.current = setTimeout(() => {
-            const toSave = {
-               timerId,
-               clockSpeedRef,
-               tickspeedPrice,
-               antimatter,
-               firstDimCount,
-               firstDimFactor,
-               firstDimPrice,
-               firstDimFactorCount,
-               secondDimCount,
-               secondDimFactor,
-               secondDimPrice,
-               secondDimFactorCount,
-               thirdDimCount,
-               thirdDimFactor,
-               thirdDimPrice,
-               thirdDimFactorCount,
-            };
-            console.log(toSave);
-            //localStorage.setItem("data", JSON.stringify(toSave));
-            startSave();
-         }, 5 * 60 * 1000);
-      };
-      startSave();
-
-      // if we ever unmount / destroy this component instance, clear the timeout
-      return () => clearTimeout(timerId.current);
-   }, []);
-
    timerExpiredCallback.current = () => {
-      setAntimatter(prevantimatter => prevantimatter + firstDimCount * firstDimFactor);
+      setAntimatter(prevAntimatter => prevAntimatter + firstDimCount * firstDimFactor);
       setFirstDimCount(prevFirstDim => prevFirstDim + (secondDimCount / 10) * secondDimFactor);
       setSecondDimCount(prevSecondDim => prevSecondDim + (thirdDimCount / 100) * thirdDimFactor);
    };
 
    useEffect(() => {
       const startTimer = () => {
-         timerId.current = setTimeout(() => {
+         timerIdRef.current = setTimeout(() => {
             timerExpiredCallback.current();
             startTimer();
          }, clockSpeedRef.current);
@@ -83,7 +61,7 @@ function App() {
       startTimer();
 
       // if we ever unmount / destroy this component instance, clear the timeout
-      return () => clearTimeout(timerId.current);
+      return () => clearTimeout(timerIdRef.current);
    }, []);
 
    const handleTickBtnClick = () => {
@@ -91,6 +69,102 @@ function App() {
       setAntimatter(prevPrice => prevPrice - tickspeedPrice);
       setTickspeedPrice(prevPrice => prevPrice * 10);
    };
+
+   //-------------------------------------------
+   
+   // FROM HERE
+   // creates constantly an uptodate object which is then saved later
+   useEffect(() => {
+      dataRef.current = {
+         // ...dataRef.current,
+         antimatter,
+         tickspeedPrice,
+         firstDimCount,
+         firstDimFactor,
+         firstDimPrice,
+         firstDimFactorCount,
+         secondDimCount,
+         secondDimFactor,
+         secondDimPrice,
+         secondDimFactorCount,
+         thirdDimCount,
+         thirdDimFactor,
+         thirdDimPrice,
+         thirdDimFactorCount,
+         resetGameCounter,
+         highesDim,
+         timerIdRef,
+         idRef,
+         clockSpeedRef,
+      };
+      //console.log('dataRef object update cycle: ', dataRef.current ?? '');
+   });
+
+   // saves the created object every minuit to localStorage
+   useEffect(() => {
+      const startSave = () => {
+         timerIdRef.current = setTimeout(() => {
+            //localStorage.removeItem('dataRef');
+            localStorage.setItem('data', JSON.stringify(dataRef.current));
+            console.log('data save cycle: ', dataRef.current);
+            startSave();
+         }, 60000);
+      };
+      startSave();
+
+      // if we ever unmount / destroy this component instance, clear the timeout
+      return () => clearTimeout(timerIdRef.current);
+   }, []);
+
+   // this prints the saved object from local storage. It is just for dev. No final purpose 
+   useEffect(() => {
+      const printStorage = () => {
+         idRef.current = setTimeout(() => {
+            let savedDataRef = JSON.parse(localStorage.getItem('data') ?? '');
+            console.log('dataRef from storage', savedDataRef);
+            printStorage();
+         }, 60000);
+      };
+      printStorage();
+
+      return () => clearTimeout(idRef.current);
+   }, []);
+
+   /* resets the game to unlock new dimension */
+   const handleResetGameClick = () => {
+      clockSpeedRef.current = 2000;
+      timerIdRef.current = -1;
+      idRef.current = -1;
+
+      setTickspeedPrice(10);
+      setAntimatter(1000);
+
+      setFirstDimFactor(1.1);
+      setFirstDimCount(0);
+      setFirstDimPrice(10);
+      setFirstDimFactorCount(0);
+
+      setSecondDimFactor(1.1);
+      setSecondDimCount(0);
+      setSecondDimPrice(100);
+      setSecondDimFactorCount(0);
+
+      setThirdDimFactor(1.1);
+      setThirdDimCount(0);
+      setThirdDimPrice(1000);
+      setThirdDimFactorCount(0);
+
+      // increase ResetCounter by one
+      setResetGameCounter(prev => prev + 1);
+   };
+   /*   saves the current DimCount of the highes Dim */
+   useEffect(() => {
+      /* higher dims have to be added when created */
+      if (thirdDimCount !== 0) setHighesDim(thirdDimCount);
+      else setHighesDim(secondDimCount);
+   }, [secondDimCount, thirdDimCount]);
+
+   //---------------------------------------------------
 
    return (
       <div className='App'>
@@ -105,12 +179,12 @@ function App() {
             <p className='centered'>{`The current clockspeed is ${clockSpeedRef.current} ms. Reduce the tickspeed by 11%.`}</p>
             <div className='centered'>
                <button
-                  className='btn centered'
+                  className='btn'
                   onClick={handleTickBtnClick}
                   disabled={antimatter - tickspeedPrice <= 0}>
                   Cost one time: {tickspeedPrice}{' '}
                </button>
-               <button className='btn centered' disabled={antimatter - tickspeedPrice <= 0}>
+               <button className='btn' disabled={antimatter - tickspeedPrice <= 0}>
                   Buy Max
                </button>
             </div>
@@ -143,8 +217,8 @@ function App() {
             setDimFactorCount={setSecondDimFactorCount}>
             {`Second Dimension Cost: ${secondDimPrice}`}
          </Dimension>
-
-         {secondDimCount > 0 && (
+         {/* the 3. dimension must be unlocked */}
+         {resetGameCounter > 2 && (
             <Dimension
                antimatter={antimatter}
                dimCount={thirdDimCount}
@@ -158,7 +232,25 @@ function App() {
                setDimFactorCount={setThirdDimFactorCount}>
                {`Third Dimension Cost: ${thirdDimPrice}`}
             </Dimension>
+
+            /* Here have to come all the other dims  */
          )}
+         <hr />
+         <br />
+         <div className='gridContainer4Cols cols-2'>
+            <p className=''>{`Dimension Shift (${resetGameCounter})  `}</p>
+            <p className=''>{`requires 20 ${resetGameCounter}. Dimension `}</p>
+            <button className='btn ' onClick={handleResetGameClick} disabled={highesDim < 20}>
+               Reset game to get new dimension
+            </button>
+         </div>
+         <div className='gridContainer4Cols cols-2'>
+            <p className=''>{`Antimatter Galaxies (${galaxyCounter})`}</p>
+            <p className=''>{`requires 80 8. Dimension `}</p>
+            <button className='btn' disabled={true}>
+               Increase Tickspeed bump to 12%
+            </button>
+         </div>
       </div>
    );
 }
