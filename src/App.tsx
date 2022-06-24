@@ -11,15 +11,16 @@ type DimProps = {
 };
 
 function App() {
-   // tried to load the object data with the first opening of the page and then assign it to all the state but this was not sucessful. Loading ervery prop this way is very slow. CUrrently I do not know how to get the load data 
+   // tried to load the object data with the first opening of the page and then assign it to all the state but this was not sucessful. Loading ervery prop this way is very slow. CUrrently I do not know how to get the load data
 
-   // the 2. thing I did not know how to do was the Buy max button. A while loop crashed the browser :( maybe it works recursive
+   // the 2. thing I did not know how to do was the Buy max button. A while loop crashed the browser :( UPDATE: now it works with a recursion. are there better ways
    const dataRef = useRef(() => JSON.parse(localStorage.getItem('data')) ?? {});
-
+   const canIstillBuyRef = useRef(0);
    const timerExpiredCallback = useRef(() => {});
    const clockSpeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
    const idRef = useRef(-1);
+   const timeIdRef = useRef(-1);
 
    // const dataRef = useRef({});
    const [tickspeedPrice, setTickspeedPrice] = useState(10);
@@ -64,15 +65,41 @@ function App() {
       return () => clearTimeout(timerIdRef.current);
    }, []);
 
+   //-------------------------------------------
+   // FROM HERE
+
    const handleTickBtnClick = () => {
       clockSpeedRef.current = clockSpeedRef.current * (1 - 0.11);
       setAntimatter(prevPrice => prevPrice - tickspeedPrice);
       setTickspeedPrice(prevPrice => prevPrice * 10);
    };
 
-   //-------------------------------------------
-   
-   // FROM HERE
+   useEffect(() => {
+      canIstillBuyRef.current = antimatter - tickspeedPrice;
+   }, [tickspeedPrice]);
+
+   /* ref is needed to get the current state */
+   const canIstillBuy = () => {
+      if (canIstillBuyRef.current > 0) return true;
+      else return false;
+   };
+
+   /* It works but I do not know if there are better ways */
+   const handleBuyMaxClick = () => {
+      const repeatMax = () => {
+         timeIdRef.current = setTimeout(() => {
+            if (canIstillBuy()) {
+               console.log(canIstillBuy(), canIstillBuyRef.current, tickspeedPrice);
+               handleTickBtnClick();
+               repeatMax();
+            }
+         }, 20);
+
+         return () => clearTimeout(timeIdRef.current);
+      };
+      repeatMax();
+   };
+
    // creates constantly an uptodate object which is then saved later
    useEffect(() => {
       dataRef.current = {
@@ -116,7 +143,7 @@ function App() {
       return () => clearTimeout(timerIdRef.current);
    }, []);
 
-   // this prints the saved object from local storage. It is just for dev. No final purpose 
+   // this prints the saved object from local storage. It is just for dev. No final purpose
    useEffect(() => {
       const printStorage = () => {
          idRef.current = setTimeout(() => {
@@ -176,7 +203,9 @@ function App() {
          </div>
 
          <div className='gridContainer3Rows'>
-            <p className='centered'>{`The current clockspeed is ${clockSpeedRef.current} ms. Reduce the tickspeed by 11%.`}</p>
+            <p className='centered'>{`The current clockspeed is ${clockSpeedRef.current.toFixed(
+               0
+            )} ms. Reduce the tickspeed by 11%.`}</p>
             <div className='centered'>
                <button
                   className='btn'
@@ -184,7 +213,10 @@ function App() {
                   disabled={antimatter - tickspeedPrice <= 0}>
                   Cost one time: {tickspeedPrice}{' '}
                </button>
-               <button className='btn' disabled={antimatter - tickspeedPrice <= 0}>
+               <button
+                  className='btn'
+                  onClick={handleBuyMaxClick}
+                  disabled={antimatter - tickspeedPrice <= 0}>
                   Buy Max
                </button>
             </div>

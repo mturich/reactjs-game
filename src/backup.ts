@@ -17,3 +17,7 @@ const data = {
    thirdDimPrice,
    thirdDimFactorCount,
 };
+const canIstillBuy = () => {
+   if (canIstillBuyRef.current > 0) true
+   else false
+}
