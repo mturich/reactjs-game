@@ -16,7 +16,7 @@ type DimProps = {
 };
 export default function Dimension(props: DimProps) {
 
-   const { antimatter, dimCount, setDimCount, setAntimatter, price, setPrice, factor, setFactor, dimFactorCount, setDimFactorCount } = props;
+   const { antimatter, dimCount, setDimCount, setAntimatter, price, setPrice, factor, setFactor, dimFactorCount, setDimFactorCount, data } = props;
     
    const handleDimBuy = (quantity: number) => {
       if (antimatter >= price) {

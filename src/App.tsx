@@ -1,6 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useDebugValue } from 'react';
 import './App.css';
 import Dimension from './Dimension';
+import Data from './Data.ts';
 
 type DimProps = {
    antimatter: number;
@@ -14,38 +15,40 @@ function App() {
    // tried to load the object data with the first opening of the page and then assign it to all the state but this was not sucessful. Loading ervery prop this way is very slow. CUrrently I do not know how to get the load data
 
    // the 2. thing I did not know how to do was the Buy max button. A while loop crashed the browser :( UPDATE: now it works with a recursion. are there better ways
-   const dataRef = useRef(() => JSON.parse(localStorage.getItem('data')) ?? {});
+
+   const [antimatter, setAntimatter] = useState(1000);
+   const [firstDimFactor, setFirstDimFactor] = useState(1.1);
+   const [secondDimFactor, setSecondDimFactor] = useState(1.1);
+   const [thirdDimFactor, setThirdDimFactor] = useState(1.1);
+   const [data, setData] = useState(() => JSON.parse(localStorage.getItem('data') || '{}'));
+   const dataRef = useRef(() => JSON.parse(localStorage.getItem('data') || '{}'));
+
    const canIstillBuyRef = useRef(0);
-   const timerExpiredCallback = useRef(() => {});
-   const clockSpeedRef = useRef(2000);
+   const timerExpiredCallback = useRef(() => { });
    const timerIdRef = useRef(-1);
    const idRef = useRef(-1);
    const timeIdRef = useRef(-1);
+   const clockSpeedRef = useRef(2000);
 
-   // const dataRef = useRef({});
    const [tickspeedPrice, setTickspeedPrice] = useState(10);
-   const [antimatter, setAntimatter] = useState(1000);
    const [resetGameCounter, setResetGameCounter] = useState(2);
    const [galaxyCounter, setGalaxyCounter] = useState(0);
    const [highesDim, setHighesDim] = useState(0);
 
-   const [firstDimFactor, setFirstDimFactor] = useState(1.1);
    const [firstDimCount, setFirstDimCount] = useState(0);
    const [firstDimPrice, setFirstDimPrice] = useState(10);
    const [firstDimFactorCount, setFirstDimFactorCount] = useState(0);
 
-   const [secondDimFactor, setSecondDimFactor] = useState(1.1);
    const [secondDimCount, setSecondDimCount] = useState(0);
    const [secondDimPrice, setSecondDimPrice] = useState(100);
    const [secondDimFactorCount, setSecondDimFactorCount] = useState(0);
 
-   const [thirdDimFactor, setThirdDimFactor] = useState(1.1);
    const [thirdDimCount, setThirdDimCount] = useState(0);
    const [thirdDimPrice, setThirdDimPrice] = useState(1000);
    const [thirdDimFactorCount, setThirdDimFactorCount] = useState(0);
    // if the component updates, replace the timeout callback with one that references the new
    //   values of `count` and `firstDimCount`
-
+   useDebugValue(['Hi', data]);
    timerExpiredCallback.current = () => {
       setAntimatter(prevAntimatter => prevAntimatter + firstDimCount * firstDimFactor);
       setFirstDimCount(prevFirstDim => prevFirstDim + (secondDimCount / 10) * secondDimFactor);
@@ -100,30 +103,29 @@ function App() {
       repeatMax();
    };
 
+   useEffect(()=> {
+      console.log("This is data: ",data)
+   },[data])
+
    // creates constantly an uptodate object which is then saved later
    useEffect(() => {
       dataRef.current = {
-         // ...dataRef.current,
-         antimatter,
-         tickspeedPrice,
-         firstDimCount,
          firstDimFactor,
          firstDimPrice,
          firstDimFactorCount,
-         secondDimCount,
          secondDimFactor,
          secondDimPrice,
          secondDimFactorCount,
-         thirdDimCount,
          thirdDimFactor,
          thirdDimPrice,
          thirdDimFactorCount,
-         resetGameCounter,
          highesDim,
-         timerIdRef,
-         idRef,
+         galaxyCounter,
+         resetGameCounter,
          clockSpeedRef,
+         tickspeedPrice,
       };
+
       //console.log('dataRef object update cycle: ', dataRef.current ?? '');
    });
 
@@ -131,11 +133,10 @@ function App() {
    useEffect(() => {
       const startSave = () => {
          timerIdRef.current = setTimeout(() => {
-            //localStorage.removeItem('dataRef');
+            setData({ ...dataRef.current });
             localStorage.setItem('data', JSON.stringify(dataRef.current));
-            console.log('data save cycle: ', dataRef.current);
             startSave();
-         }, 60000);
+         }, 20000);
       };
       startSave();
 
@@ -147,10 +148,11 @@ function App() {
    useEffect(() => {
       const printStorage = () => {
          idRef.current = setTimeout(() => {
-            let savedDataRef = JSON.parse(localStorage.getItem('data') ?? '');
-            console.log('dataRef from storage', savedDataRef);
+            let savedData = JSON.parse(localStorage.getItem('data') ?? '{}');
+            console.log('dataRef from storage: ');
+            console.log(savedData);
             printStorage();
-         }, 60000);
+         }, 20000);
       };
       printStorage();
 
@@ -232,8 +234,11 @@ function App() {
             factor={firstDimFactor}
             setFactor={setFirstDimFactor}
             dimFactorCount={firstDimFactorCount}
-            setDimFactorCount={setFirstDimFactorCount}>
-            {`First Dimension Cost: ${firstDimPrice}`}
+            setDimFactorCount={setFirstDimFactorCount}
+            data={data}
+            setData={setData}
+         >
+            {`First Dimension Cost: ${dataRef.current.firstDimPrice}`}
          </Dimension>
 
          <Dimension
@@ -246,7 +251,9 @@ function App() {
             factor={secondDimFactor}
             setFactor={setSecondDimFactor}
             dimFactorCount={secondDimFactorCount}
-            setDimFactorCount={setSecondDimFactorCount}>
+            setDimFactorCount={setSecondDimFactorCount}
+            data={data}
+            setData={setData}>
             {`Second Dimension Cost: ${secondDimPrice}`}
          </Dimension>
          {/* the 3. dimension must be unlocked */}
@@ -261,7 +268,9 @@ function App() {
                factor={thirdDimFactor}
                setFactor={setThirdDimFactor}
                dimFactorCount={thirdDimFactorCount}
-               setDimFactorCount={setThirdDimFactorCount}>
+               setDimFactorCount={setThirdDimFactorCount}
+               data={data}
+               setData={setData}>
                {`Third Dimension Cost: ${thirdDimPrice}`}
             </Dimension>
 
