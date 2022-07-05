@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Dimension from './Dimension';
+import initialGameState from './initialGameState.js';
 
 type DimProps = {
    antimatter: number;
@@ -12,7 +13,7 @@ type DimProps = {
 
 function App() {
    // tried to load the object data with the first opening of the page and then assign it to all the state but this was not sucessful. Loading ervery prop this way is very slow. CUrrently I do not know how to get the load data
-
+   const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
    // the 2. thing I did not know how to do was the Buy max button. A while loop crashed the browser :( UPDATE: now it works with a recursion. are there better ways
    const dataRef = useRef(() => JSON.parse(localStorage.getItem('data')) ?? {});
    const canIstillBuyRef = useRef(0);
@@ -46,11 +47,21 @@ function App() {
    // if the component updates, replace the timeout callback with one that references the new
    //   values of `count` and `firstDimCount`
 
-   timerExpiredCallback.current = () => {
+   /*  timerExpiredCallback.current = () => {
       setAntimatter(prevAntimatter => prevAntimatter + firstDimCount * firstDimFactor);
       setFirstDimCount(prevFirstDim => prevFirstDim + (secondDimCount / 10) * secondDimFactor);
       setSecondDimCount(prevSecondDim => prevSecondDim + (thirdDimCount / 100) * thirdDimFactor);
+   }; */
+   timerExpiredCallback.current = () => {
+      setGameState((prevGameState: initialGameState) => ({
+         ...prevGameState,
+         antimatter: gameState.antimatter + 5,
+      }));
    };
+
+   useEffect(() => {
+      console.log( gameState );
+   });
 
    useEffect(() => {
       const startTimer = () => {
@@ -100,7 +111,7 @@ function App() {
       repeatMax();
    };
 
-   // creates constantly an uptodate object which is then saved later
+   /*   // creates constantly an uptodate object which is then saved later
    useEffect(() => {
       dataRef.current = {
          // ...dataRef.current,
@@ -132,10 +143,10 @@ function App() {
       const startSave = () => {
          timerIdRef.current = setTimeout(() => {
             //localStorage.removeItem('dataRef');
-            localStorage.setItem('data', JSON.stringify(dataRef.current));
-            console.log('data save cycle: ', dataRef.current);
+            localStorage.setItem('data', JSON.stringify(gameState));
+            console.log('data save cycle: ', gameState);
             startSave();
-         }, 60000);
+         }, 10000);
       };
       startSave();
 
@@ -156,7 +167,7 @@ function App() {
 
       return () => clearTimeout(idRef.current);
    }, []);
-
+ */
    /* resets the game to unlock new dimension */
    const handleResetGameClick = () => {
       clockSpeedRef.current = 2000;
@@ -233,7 +244,7 @@ function App() {
             setFactor={setFirstDimFactor}
             dimFactorCount={firstDimFactorCount}
             setDimFactorCount={setFirstDimFactorCount}>
-            {`First Dimension Cost: ${firstDimPrice}`}
+            {`First Dimension Cost: ${gameState.firstDimPrice}`}
          </Dimension>
 
          <Dimension
