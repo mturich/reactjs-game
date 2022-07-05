@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import Dimension from './Dimension';
-import initialGameState from './initialGameState.js';
+import initialGameState from './common/initialGameState';
+import {GameStateInterface} from './common/GameStateInterface'
 
 type DimProps = {
    antimatter: number;
@@ -53,7 +54,7 @@ function App() {
       setSecondDimCount(prevSecondDim => prevSecondDim + (thirdDimCount / 100) * thirdDimFactor);
    }; */
    timerExpiredCallback.current = () => {
-      setGameState((prevGameState: initialGameState) => ({
+      setGameState((prevGameState: GameStateInterface) => ({
          ...prevGameState,
          antimatter: gameState.antimatter + 5,
       }));

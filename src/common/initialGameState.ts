@@ -1,4 +1,7 @@
-const initialGameState = {
+import {GameStateInterface} from './GameStateInterface'
+
+
+let initialGameState:GameStateInterface = {
    antimatter: 1000,
 
    canIstillBuyRef: 0,
@@ -27,6 +30,7 @@ const initialGameState = {
    thirdDimPrice: 1000,
    thirdDimFactorCount: 0,
  
-};
+}
 
-export default JSON.stringify(initialGameState);
+export default JSON.stringify(initialGameState)
+
