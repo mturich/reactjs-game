@@ -16,12 +16,11 @@ function App() {
    // tried to load the object data with the first opening of the page and then assign it to all the state but this was not sucessful. Loading ervery prop this way is very slow. CUrrently I do not know how to get the load data
    const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
    // the 2. thing I did not know how to do was the Buy max button. A while loop crashed the browser :( UPDATE: now it works with a recursion. are there better ways
-   const dataRef = useRef(() => JSON.parse(localStorage.getItem('data')) ?? {});
+/*  JSON.parse(localStorage.getItem('data')) */
    const canIstillBuyRef = useRef(0);
    const timerExpiredCallback = useRef(() => {});
    const clockSpeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
-   const idRef = useRef(-1);
    const timeIdRef = useRef(-1);
 
    // const dataRef = useRef({});
@@ -54,14 +53,16 @@ function App() {
       setSecondDimCount(prevSecondDim => prevSecondDim + (thirdDimCount / 100) * thirdDimFactor);
    }; */
    timerExpiredCallback.current = () => {
-      setGameState((prevGameState: GameStateInterface) => ({
-         ...prevGameState,
-         antimatter: gameState.antimatter + 5,
+      setGameState((prevGS: GameStateInterface) => ({
+         ...prevGS,
+         antimatter: prevGS.antimatter + prevGS.firstDimCount * prevGS.firstDimFactor,
+         firstDimCount: prevGS.firstDimCount + prevGS.secondDimCount / 10 * prevGS.secondDimFactor,
+         secondDimCount: prevGS.secondDimCount + prevGS.thirdDimCount / 100 * prevGS.thirdDimFactor
       }));
    };
 
    useEffect(() => {
-      console.log( gameState );
+      console.log( gameState.antimatter );
    });
 
    useEffect(() => {
@@ -82,8 +83,14 @@ function App() {
 
    const handleTickBtnClick = () => {
       clockSpeedRef.current = clockSpeedRef.current * (1 - 0.11);
-      setAntimatter(prevPrice => prevPrice - tickspeedPrice);
-      setTickspeedPrice(prevPrice => prevPrice * 10);
+   /*    setAntimatter(prevPrice => prevPrice - tickspeedPrice);
+      setTickspeedPrice(prevPrice => prevPrice * 10); */
+      setGameState((prevGS: GameStateInterface) => ({
+         ...prevGS,
+         antimatter: prevGS.antimatter - prevGS.tickspeedPrice,
+         tickspeedPrice: prevGS.tickspeedPrice * 10,
+         
+      }))
    };
 
    useEffect(() => {
@@ -113,31 +120,6 @@ function App() {
    };
 
    /*   // creates constantly an uptodate object which is then saved later
-   useEffect(() => {
-      dataRef.current = {
-         // ...dataRef.current,
-         antimatter,
-         tickspeedPrice,
-         firstDimCount,
-         firstDimFactor,
-         firstDimPrice,
-         firstDimFactorCount,
-         secondDimCount,
-         secondDimFactor,
-         secondDimPrice,
-         secondDimFactorCount,
-         thirdDimCount,
-         thirdDimFactor,
-         thirdDimPrice,
-         thirdDimFactorCount,
-         resetGameCounter,
-         highesDim,
-         timerIdRef,
-         idRef,
-         clockSpeedRef,
-      };
-      //console.log('dataRef object update cycle: ', dataRef.current ?? '');
-   });
 
    // saves the created object every minuit to localStorage
    useEffect(() => {
@@ -169,6 +151,7 @@ function App() {
       return () => clearTimeout(idRef.current);
    }, []);
  */
+   
    /* resets the game to unlock new dimension */
    const handleResetGameClick = () => {
       setGameState(JSON.parse(initialGameState))
@@ -187,7 +170,7 @@ function App() {
       <div className='App'>
          <div className='heading'>
             <p className='centered highlight'>
-               You have {antimatter % 1 === 0 ? antimatter.toFixed(0) : antimatter.toFixed(1)}{' '}
+               You have {gameState.antimatter % 1 === 0 ? gameState.antimatter.toFixed(0) : gameState.antimatter.toFixed(1)}{' '}
                antimatters.
             </p>
          </div>
@@ -200,13 +183,13 @@ function App() {
                <button
                   className='btn'
                   onClick={handleTickBtnClick}
-                  disabled={antimatter - tickspeedPrice <= 0}>
-                  Cost one time: {tickspeedPrice}{' '}
+                  disabled={gameState.antimatter - gameState.tickspeedPrice <= 0}>
+                  Cost one time: {gameState.tickspeedPrice}{' '}
                </button>
                <button
                   className='btn'
                   onClick={handleBuyMaxClick}
-                  disabled={antimatter - tickspeedPrice <= 0}>
+                  disabled={gameState.antimatter - gameState.tickspeedPrice <= 0}>
                   Buy Max
                </button>
             </div>

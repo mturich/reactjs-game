@@ -4,11 +4,11 @@ import {GameStateInterface} from './GameStateInterface'
 let initialGameState:GameStateInterface = {
    antimatter: 1000,
 
-   canIstillBuyRef: 0,
+/*    canIstillBuyRef: 0,
    clockSpeedRef: 2000,
    timerIdRef: -1,
    idRef: -1,
-   timeIdRef: -1,
+   timeIdRef: -1, */
 
    tickspeedPrice: 10,
    resetGameCounter: 2,

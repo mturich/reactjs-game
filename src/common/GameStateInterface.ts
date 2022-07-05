@@ -1,11 +1,11 @@
 export interface GameStateInterface {
    antimatter: number;
 
-   canIstillBuyRef: number;
+/*    canIstillBuyRef: number;
    clockSpeedRef: number;
    timerIdRef: number;
    idRef: number;
-   timeIdRef: number;
+   timeIdRef: number; */
 
    tickspeedPrice: number;
    resetGameCounter: number;
