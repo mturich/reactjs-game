@@ -170,31 +170,9 @@ function App() {
  */
    /* resets the game to unlock new dimension */
    const handleResetGameClick = () => {
-      clockSpeedRef.current = 2000;
-      timerIdRef.current = -1;
-      idRef.current = -1;
-
-      setTickspeedPrice(10);
-      setAntimatter(1000);
-
-      setFirstDimFactor(1.1);
-      setFirstDimCount(0);
-      setFirstDimPrice(10);
-      setFirstDimFactorCount(0);
-
-      setSecondDimFactor(1.1);
-      setSecondDimCount(0);
-      setSecondDimPrice(100);
-      setSecondDimFactorCount(0);
-
-      setThirdDimFactor(1.1);
-      setThirdDimCount(0);
-      setThirdDimPrice(1000);
-      setThirdDimFactorCount(0);
-
-      // increase ResetCounter by one
-      setResetGameCounter(prev => prev + 1);
+      setGameState(JSON.parse(initialGameState))
    };
+
    /*   saves the current DimCount of the highes Dim */
    useEffect(() => {
       /* higher dims have to be added when created */

@@ -8,7 +8,6 @@ const initialGameState = {
    timeIdRef: -1,
 
    tickspeedPrice: 10,
-
    resetGameCounter: 2,
    galaxyCounter: 0,
    highesDim: 0,
@@ -18,7 +17,7 @@ const initialGameState = {
    firstDimPrice: 10,
    firstDimFactorCount: 0,
 
-   /*    secondDimFactor: 1.1,
+   secondDimFactor: 1.1,
    secondDimCount: 0,
    secondDimPrice: 100,
    secondDimFactorCount: 0,
@@ -27,7 +26,7 @@ const initialGameState = {
    thirdDimCount: 0,
    thirdDimPrice: 1000,
    thirdDimFactorCount: 0,
- */
+ 
 };
 
 export default JSON.stringify(initialGameState);
