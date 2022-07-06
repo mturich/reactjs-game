@@ -1,58 +1,58 @@
-import { useState, useEffect, Children } from 'react';
 import './Dimentions.css';
+import { GameState, DimProps } from './common/GameStateInterface';
 
-type DimProps = {
-   antimatter: number;
-   setAntimatter: (fn: ((antimatter: number) => void) | number) => void;
-   dimCount: number;
-   setDimCount: (fn: (dim: number) => void) => void;
-   price: number;
-   setPrice: (fn: (dim: number) => void) => void;
-   factor: number;
-   setFactor: (fn: (dim: number) => void) => void;
-   dimFactorCount: number;
-   setDimFactorCount: (fn: ((antimatter: number) => void) | number) => void;
-   children: string;
-};
 export default function Dimension(props: DimProps) {
+   const { nthDim, gs, setGameState } = props;
 
-   const { antimatter, dimCount, setDimCount, setAntimatter, price, setPrice, factor, setFactor, dimFactorCount, setDimFactorCount } = props;
-    
    const handleDimBuy = (quantity: number) => {
-      if (antimatter >= price) {
-         setDimCount(dimCount => dimCount + quantity);
+      if (gs.antimatter >= gs.dims[nthDim].dimPrice) {
+         /*    setDimCount(dimCount => dimCount + quantity);
          setAntimatter(prevValue => prevValue - price * quantity);
-         setDimFactorCount(prevCount => prevCount +1)
+         setDimFactorCount(prevCount => prevCount + 1); */
+         setGameState((prevGS: GameState) => ({
+            ...prevGS,
+         }));
       }
-      if ((dimCount + 1) % 10 === 0 && dimCount > 1 || quantity===10) {
-         setPrice(prevPrice => prevPrice * 10);
+      if (
+         ((gs.dims[nthDim].dimCount + 1) % 10 === 0 && gs.dims[nthDim].dimCount > 1) ||
+         quantity === 10
+      ) {
+         /*          setPrice(prevPrice => prevPrice * 10);
          setFactor(prevFactor => prevFactor * 2)
-         setDimFactorCount(0)
+         setDimFactorCount(0) */
       }
    };
-
 
    return (
       <>
          <br />
          <div className='gridContainer4Cols'>
             <p className='centered'>
-               {`${ props.children.split(" ").slice(0,2).join(" ")}   x${factor}`}
+               {`${props.children.split(' ').slice(0, 2).join(' ')}   x${
+                  gs.dims[nthDim].dimFactor
+               }`}
             </p>
             <p className='centered'>
-               {` ${dimCount % 1 === 0 ? dimCount.toFixed(0) : dimCount.toFixed(1)}
-                  (${dimFactorCount})
+               {` ${
+                  gs.dims[nthDim].dimCount % 1 === 0
+                     ? gs.dims[nthDim].dimCount.toFixed(0)
+                     : gs.dims[nthDim].dimCount.toFixed(1)
+               }
+                  (${gs.dims[nthDim].dimFactorCount})
                
                `}
             </p>
-            <button className='btn' onClick={() => handleDimBuy(1)} disabled={antimatter < price}>
-               {props.children.split(" ").slice(2,4).join(" ")}
+            <button
+               className='btn'
+               onClick={() => handleDimBuy(1)}
+               disabled={gs.antimatter < gs.dims[nthDim].dimPrice}>
+               {props.children.split(' ').slice(2, 4).join(' ')}
             </button>
             <button
                className='btn'
                onClick={() => handleDimBuy(10)}
-               disabled={antimatter < 10 * price}>
-               Buy 10x, Cost: {price*10}
+               disabled={gs.antimatter < 10 * gs.dims[nthDim].dimPrice}>
+               Buy 10x, Cost: {gs.dims[nthDim].dimPrice * 10}
             </button>
          </div>
 

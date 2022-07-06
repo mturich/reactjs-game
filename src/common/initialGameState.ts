@@ -1,36 +1,34 @@
-import {GameStateInterface} from './GameStateInterface'
+import { GameState } from './GameStateInterface';
 
-
-let initialGameState:GameStateInterface = {
+let initialGameState: GameState = {
    antimatter: 1000,
-
-/*    canIstillBuyRef: 0,
-   clockSpeedRef: 2000,
-   timerIdRef: -1,
-   idRef: -1,
-   timeIdRef: -1, */
-
    tickspeedPrice: 10,
-   resetGameCounter: 2,
+   resetGameCounter: 3,
    galaxyCounter: 0,
-   highesDim: 0,
+   //highesDim: 0,
+   dims: [
+      {
+         nthDim: 0,
+         dimFactor: 1.1,
+         dimCount: 0,
+         dimPrice: 10,
+         dimFactorCount: 0,
+      },
+      {
+         nthDim: 1,
+         dimFactor: 1.1,
+         dimCount: 0,
+         dimPrice: 100,
+         dimFactorCount: 0,
+      },
+      {
+         nthDim: 2,
+         dimFactor: 1.1,
+         dimCount: 0,
+         dimPrice: 1000,
+         dimFactorCount: 0,
+      },
+   ],
+};
 
-   firstDimFactor: 1.1,
-   firstDimCount: 0,
-   firstDimPrice: 10,
-   firstDimFactorCount: 0,
-
-   secondDimFactor: 1.1,
-   secondDimCount: 0,
-   secondDimPrice: 100,
-   secondDimFactorCount: 0,
-   
-   thirdDimFactor: 1.1,
-   thirdDimCount: 0,
-   thirdDimPrice: 1000,
-   thirdDimFactorCount: 0,
- 
-}
-
-export default JSON.stringify(initialGameState)
-
+export default JSON.stringify(initialGameState);
