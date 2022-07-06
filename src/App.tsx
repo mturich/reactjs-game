@@ -19,26 +19,32 @@ function App() {
       setSecondDimCount(prevSecondDim => prevSecondDim + (thirdDimCount / 100) * thirdDimFactor);
    }; */
 
-   /*       firstDimCount:
-            prevGS.firstDimCount + (prevGS.secondDimCount / 10) * prevGS.secondDimFactor,
-         secondDimCount:
-            prevGS.secondDimCount + (prevGS.thirdDimCount / 100) * prevGS.thirdDimFactor, */
    timerExpiredCallback.current = () => {
       setGameState((prevGS: GameState) => ({
          ...prevGS,
          antimatter: prevGS.antimatter + prevGS.dims[0].dimCount * prevGS.dims[0].dimFactor,
-         /*    dims: [
-            ...prevGS.dims
-           
-         ].forEach(dim => dim.dimCount + (prevGS?.dims[dim.nthDim+1]?.dimCount ?? 0) * (prevGS?.dims[dim.nthDim+1]?.dimFactor ?? 0)/10)
- */
+         dims: [...gameState.dims].map((dim, index) => {
+            return {
+               ...dim,
+               dimCount:
+                  dim.dimCount +
+                  ((gameState.dims[index + 1]?.dimCount ?? 0) *
+                     (gameState.dims[index + 1]?.dimFactor ?? 0)) /
+                     Math.pow(10, index + 1),
+            };
+         }),
       }));
    };
 
    useEffect(() => {
-      let test = gameState.dims.forEach(dim => dim.dimCount + 5);
-      console.log(test);
-   });
+      /*         [...gameState.dims].map((dim, index) => { return {
+            ...dim,
+             dimCount: dim.dimCount + (gameState.dims[index + 1]?.dimCount ?? 0) * (gameState.dims[index + 1]?.dimFactor ?? 0) / 10
+   
+   } 
+     })
+     */
+   }, []);
 
    useEffect(() => {
       const startTimer = () => {
