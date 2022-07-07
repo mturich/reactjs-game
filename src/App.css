@@ -1,5 +1,5 @@
 * {
-   /* border: 1px solid black; */
+/*    border: 1px solid black; */
 }
 
 .App {
@@ -24,6 +24,7 @@
    grid-template-columns: repeat(4, 1fr);
    gap: 10px;
    grid-auto-rows: minmax(40px, auto);
+
 }
 
 .gridContainer3Rows {
@@ -31,6 +32,7 @@
    grid-template-rows: repeat(3, 1fr);
    gap: 4px;
    grid-auto-rows: minmax(40px, auto);
+   margin: 1rem auto;
 }
 
 .centered {
@@ -43,7 +45,7 @@
 
 .cols-2{
    grid-template-columns: repeat(3, 1fr);
-   margin: auto 5rem;
+   margin: 2rem 5rem;
 }
 
 .btn {

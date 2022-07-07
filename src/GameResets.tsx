@@ -1,24 +1,18 @@
-import React, { useEffect } from 'react';
-import { GameState } from './common/GameStateInterface';
 import initialGameState from './common/initialGameState';
 
 export default function GameResets(props: { gameState: any; setGameState: any }) {
    const { gameState, setGameState } = props;
 
    const handleResetGameClick = () => {
-      setGameState(JSON.parse(initialGameState));
+      setGameState(() => JSON.parse(initialGameState));
    };
 
    const handleTickDecreseBtn = () => {
-      setGameState((prevGS: GameState) => ({
+      setGameState(() => ({
          ...JSON.parse(initialGameState),
          tickspeedDeceaseRate: 0.12,
       }));
    };
-
-   useEffect(() => {
-      console.log(gameState.tickspeedDeceaseRate);
-   });
 
    return (
       <>

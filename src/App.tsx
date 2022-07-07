@@ -4,21 +4,21 @@ import Dimension from './Dimension';
 import initialGameState from './common/initialGameState';
 import { GameState, Dim } from './common/GameStateInterface';
 import GameResets from './GameResets';
+import Tickspeed from './TickSpeed';
 
 function App() {
    const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
    /*  JSON.parse(localStorage.getItem('data')) */
-   const canIstillBuyRef = useRef(0);
+
    const timerExpiredCallback = useRef(() => {});
    const clockSpeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
-   const timeIdRef = useRef(-1);
 
    timerExpiredCallback.current = () => {
       setGameState((prevGS: GameState) => ({
          ...prevGS,
          antimatter: prevGS.antimatter + prevGS.dims[0].dimCount * prevGS.dims[0].dimFactor,
-         dims: gameState.dims.map((dim:Dim, index:number) => {
+         dims: gameState.dims.map((dim: Dim, index: number) => {
             return {
                ...dim,
                dimCount:
@@ -47,42 +47,7 @@ function App() {
    //-------------------------------------------
    // FROM HERE
 
-   const handleTickBtnClick = () => {
-      clockSpeedRef.current = clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate);
-      setGameState((prevGS: GameState) => ({
-         ...prevGS,
-         antimatter: prevGS.antimatter - prevGS.tickspeedPrice,
-         tickspeedPrice: prevGS.tickspeedPrice * 10,
-      }));
-   };
-
-   useEffect(() => {
-      canIstillBuyRef.current = gameState.antimatter - gameState.tickspeedPrice;
-   }, [gameState.tickspeedPrice]);
-
-   /* ref is needed to get the current state */
-   const canIstillBuy = () => {
-      if (canIstillBuyRef.current > 0) return true;
-      else return false;
-   };
-
-   /* It works but I do not know if there are better ways */
-   const handleBuyMaxClick = () => {
-      const repeatMax = () => {
-         timeIdRef.current = setTimeout(() => {
-            if (canIstillBuy()) {
-               console.log(canIstillBuy(), canIstillBuyRef.current, gameState.tickspeedPrice);
-               handleTickBtnClick();
-               repeatMax();
-            }
-         }, 20);
-
-         return () => clearTimeout(timeIdRef.current);
-      };
-      repeatMax();
-   };
-
-   /*   // creates constantly an uptodate object which is then saved later
+   /*   
 
    // saves the created object every minuit to localStorage
    useEffect(() => {
@@ -129,7 +94,7 @@ function App() {
             </p>
          </div>
 
-         <div className='gridContainer3Rows'>
+         {/*      <div className='gridContainer3Rows'>
             <p className='centered'>{`The current clockspeed is ${clockSpeedRef.current.toFixed(
                0
             )} ms. Reduce the tickspeed by ${gameState.tickspeedDeceaseRate*100}%.`}</p>
@@ -147,7 +112,12 @@ function App() {
                   Buy Max
                </button>
             </div>
-         </div>
+         </div> */}
+
+         <Tickspeed
+            gameState={gameState}
+            setGameState={setGameState}
+            clockSpeedRef={clockSpeedRef}></Tickspeed>
 
          <Dimension nthDim={0} gs={gameState} setGameState={setGameState}>
             {`First Dimension Cost: ${gameState.dims[0].dimPrice}`}

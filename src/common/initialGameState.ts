@@ -60,7 +60,7 @@ let initialGameState: GameState = {
       {
          nthDim: 7,
          dimFactor: 1.1,
-         dimCount: 80,
+         dimCount: 0,
          dimPrice: 100000000,
          dimFactorCount: 0,
       },
