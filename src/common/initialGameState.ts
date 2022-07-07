@@ -25,7 +25,7 @@ let initialGameState: GameState = {
       {
          nthDim: 2,
          dimFactor: 1.1,
-         dimCount: 500000,
+         dimCount: 50,
          dimPrice: 1000,
          dimFactorCount: 0,
       },

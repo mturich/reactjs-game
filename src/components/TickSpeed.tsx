@@ -1,12 +1,16 @@
-import { useRef, useEffect } from "react";
-import { GameState } from "../common/GameStateInterface";
+import { useRef, useEffect, useState } from 'react';
+import { GameState } from '../common/GameStateInterface';
 
-export default function Tickspeed(props: { gameState: GameState; setGameState: any; clockSpeedRef: any; }) {
-   const timeIdRef = useRef(-1);
-   const canIstillBuyRef = useRef(0);
-   const { gameState, setGameState, clockSpeedRef} = props;
-
-
+export default function Tickspeed(props: {
+   gameState: GameState;
+   setGameState: any;
+   clockSpeedRef: any;
+}) {
+   const { gameState, setGameState, clockSpeedRef } = props;
+   const [buyMax, setBuyMax] = useState(
+      Math.log10(gameState.antimatter / gameState.tickspeedPrice)
+   );
+   const maxPossibleBuys = useRef(~~Math.log10(gameState.antimatter / gameState.tickspeedPrice));
    const handleTickBtnClick = () => {
       clockSpeedRef.current = clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate);
       setGameState((prevGS: GameState) => ({
@@ -17,31 +21,26 @@ export default function Tickspeed(props: { gameState: GameState; setGameState: a
    };
 
    useEffect(() => {
-      canIstillBuyRef.current = gameState.antimatter - gameState.tickspeedPrice;
-   }, [gameState.tickspeedPrice]);
-
-   /* ref is needed to get the current state */
-   const canIstillBuy = () => {
-      if (canIstillBuyRef.current > 0) return true;
-      else return false;
-   };
-
-   /* It works but I do not know if there are better ways */
-   const handleBuyMaxClick = () => {
-      const repeatMax = () => {
-         timeIdRef.current = setTimeout(() => {
-            if (canIstillBuy()) {
-               console.log(canIstillBuy(), canIstillBuyRef.current, gameState.tickspeedPrice);
-               handleTickBtnClick();
-               repeatMax();
-            }
-         }, 20);
-
-         return () => clearTimeout(timeIdRef.current);
+      const getCostForPurchaseQtyRecursive = (price: number, antimatter: number, quantity = 0) => {
+         if (antimatter < price) {
+            return quantity;
+         } else {
+            return getCostForPurchaseQtyRecursive(price * 10, antimatter - price, quantity + 1);
+         }
       };
-      repeatMax();
-   };
 
+      maxPossibleBuys.current = getCostForPurchaseQtyRecursive(
+         gameState.tickspeedPrice,
+         gameState.antimatter,
+         0
+      );
+   }, [gameState]);
+
+   const handleBuyMaxClick = () => {
+      for (let i = 0; i < maxPossibleBuys.current; i++) {
+         handleTickBtnClick();
+      }
+   };
 
    return (
       <div className='gridContainer3Rows'>
@@ -58,8 +57,8 @@ export default function Tickspeed(props: { gameState: GameState; setGameState: a
             <button
                className='btn'
                onClick={handleBuyMaxClick}
-               disabled={gameState.antimatter - gameState.tickspeedPrice <= 0}>
-               Buy Max
+               disabled={gameState.antimatter < gameState.tickspeedPrice}>
+               Buy Max ({maxPossibleBuys.current})
             </button>
          </div>
       </div>
