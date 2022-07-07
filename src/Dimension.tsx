@@ -67,6 +67,7 @@ export default function Dimension(props: DimProps) {
                
                `}
             </p>
+            
             <button
                className='btn'
                onClick={() => handleDimBuy(1)}

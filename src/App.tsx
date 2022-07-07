@@ -3,6 +3,7 @@ import './App.css';
 import Dimension from './Dimension';
 import initialGameState from './common/initialGameState';
 import { GameState, Dim } from './common/GameStateInterface';
+import GameResets from './GameResets';
 
 function App() {
    const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
@@ -12,12 +13,6 @@ function App() {
    const clockSpeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
    const timeIdRef = useRef(-1);
-
-   /*  timerExpiredCallback.current = () => {
-      setAntimatter(prevAntimatter => prevAntimatter + firstDimCount * firstDimFactor);
-      setFirstDimCount(prevFirstDim => prevFirstDim + (secondDimCount / 10) * secondDimFactor);
-      setSecondDimCount(prevSecondDim => prevSecondDim + (thirdDimCount / 100) * thirdDimFactor);
-   }; */
 
    timerExpiredCallback.current = () => {
       setGameState((prevGS: GameState) => ({
@@ -35,16 +30,6 @@ function App() {
          }),
       }));
    };
-
-   useEffect(() => {
-      /*         [...gameState.dims].map((dim, index) => { return {
-            ...dim,
-             dimCount: dim.dimCount + (gameState.dims[index + 1]?.dimCount ?? 0) * (gameState.dims[index + 1]?.dimFactor ?? 0) / 10
-   
-   } 
-     })
-     */
-   }, []);
 
    useEffect(() => {
       const startTimer = () => {
@@ -130,11 +115,6 @@ function App() {
    }, []);
  */
 
-   /* resets the game to unlock new dimension */
-   const handleResetGameClick = () => {
-      setGameState(JSON.parse(initialGameState));
-   };
-
    //---------------------------------------------------
 
    return (
@@ -189,23 +169,8 @@ function App() {
 
          <hr />
          <br />
-         <div className='gridContainer4Cols cols-2'>
-            <p className=''>{`Dimension Shift (${gameState.resetGameCounter})  `}</p>
-            <p className=''>{`requires 20 ${gameState.resetGameCounter}. Dimension `}</p>
-            <button
-               className='btn '
-               onClick={handleResetGameClick}
-               disabled={gameState.dims[gameState.resetGameCounter - 1].dimCount <= 20}>
-               Reset game to get new dimension
-            </button>
-         </div>
-         <div className='gridContainer4Cols cols-2'>
-            <p className=''>{`Antimatter Galaxies (${gameState.galaxyCounter})`}</p>
-            <p className=''>{`requires 80 8. Dimension `}</p>
-            <button className='btn' disabled={true}>
-               Increase Tickspeed bump to 12%
-            </button>
-         </div>
+         
+         <GameResets gameState={gameState} setGameState={setGameState}></GameResets>
       </div>
    );
 }
