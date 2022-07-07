@@ -5,12 +5,18 @@ export default function Dimension(props: DimProps) {
    const { nthDim, gs, setGameState } = props;
 
    const handleDimBuy = (quantity: number) => {
+      const newDim = [
+         gs.dims[nthDim].dimCount + quantity]
+
       if (gs.antimatter >= gs.dims[nthDim].dimPrice) {
-         /*    setDimCount(dimCount => dimCount + quantity);
+         /*    
+         setDimCount(dimCount => dimCount + quantity);
          setAntimatter(prevValue => prevValue - price * quantity);
          setDimFactorCount(prevCount => prevCount + 1); */
          setGameState((prevGS: GameState) => ({
             ...prevGS,
+            antimatter: prevGS.antimatter - prevGS.dims[nthDim].dimPrice * quantity,
+            dim: [...dim]
          }));
       }
       if (
