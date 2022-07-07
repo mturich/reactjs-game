@@ -1,12 +1,11 @@
 import './Dimentions.css';
-import { GameState, DimProps } from './common/GameStateInterface';
+import { GameState, DimProps, Dim } from './common/GameStateInterface';
 
 export default function Dimension(props: DimProps) {
    const { nthDim, gs, setGameState } = props;
 
    const handleDimBuy = (quantity: number) => {
-      const newDim = [
-         gs.dims[nthDim].dimCount + quantity]
+      const newDim = [gs.dims[nthDim].dimCount + quantity];
 
       if (gs.antimatter >= gs.dims[nthDim].dimPrice) {
          /*    
@@ -16,16 +15,36 @@ export default function Dimension(props: DimProps) {
          setGameState((prevGS: GameState) => ({
             ...prevGS,
             antimatter: prevGS.antimatter - prevGS.dims[nthDim].dimPrice * quantity,
-            dim: [...dim]
+            dims: prevGS.dims.map((dim: Dim, index: number) => {
+               if (dim.nthDim !== nthDim) return dim;
+               return {
+                  ...dim,
+                  dimCount: dim.dimCount + quantity,
+                  dimFactorCount: dim.dimFactorCount + quantity,
+               };
+            }),
          }));
       }
       if (
          ((gs.dims[nthDim].dimCount + 1) % 10 === 0 && gs.dims[nthDim].dimCount > 1) ||
          quantity === 10
       ) {
-         /*          setPrice(prevPrice => prevPrice * 10);
+         /*          
+         setPrice(prevPrice => prevPrice * 10);
          setFactor(prevFactor => prevFactor * 2)
          setDimFactorCount(0) */
+         setGameState((prevGS: GameState) => ({
+            ...prevGS,
+            dims: prevGS.dims.map((dim: Dim, index: number) => {
+               if (dim.nthDim !== nthDim) return dim;
+               return {
+                  ...dim,
+                  dimPrice: dim.dimPrice * 10,
+                  dimFactor: dim.dimFactor * 2,
+                  dimFactorCount: 0,
+               };
+            }),
+         }));
       }
    };
 

@@ -23,7 +23,7 @@ function App() {
       setGameState((prevGS: GameState) => ({
          ...prevGS,
          antimatter: prevGS.antimatter + prevGS.dims[0].dimCount * prevGS.dims[0].dimFactor,
-         dims: [...gameState.dims].map((dim, index) => {
+         dims: gameState.dims.map((dim:Dim, index:number) => {
             return {
                ...dim,
                dimCount:
