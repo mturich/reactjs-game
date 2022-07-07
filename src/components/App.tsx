@@ -7,14 +7,15 @@ import Tickspeed from './TickSpeed';
 import { GameState, Dim } from '../common/GameStateInterface';
 import initialGameState from '../common/initialGameState';
 import DisplayAntimatter from './DisplayAntimatter';
+import { useSaveToLocalStorage } from './useSaveToLocalStorage';
 
 function App() {
    const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
    /*  JSON.parse(localStorage.getItem('data')) */
-
    const timerExpiredCallback = useRef(() => {});
    const clockSpeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
+   //useSaveToLocalStorage(gameState)
 
    timerExpiredCallback.current = () => {
       setGameState((prevGS: GameState) => ({
@@ -45,44 +46,6 @@ function App() {
       // if we ever unmount / destroy this component instance, clear the timeout
       return () => clearTimeout(timerIdRef.current);
    }, []);
-
-   //-------------------------------------------
-   // FROM HERE
-
-   /*   
-
-   // saves the created object every minuit to localStorage
-   useEffect(() => {
-      const startSave = () => {
-         timerIdRef.current = setTimeout(() => {
-            //localStorage.removeItem('dataRef');
-            localStorage.setItem('data', JSON.stringify(gameState));
-            console.log('data save cycle: ', gameState);
-            startSave();
-         }, 10000);
-      };
-      startSave();
-
-      // if we ever unmount / destroy this component instance, clear the timeout
-      return () => clearTimeout(timerIdRef.current);
-   }, []);
-
-   // this prints the saved object from local storage. It is just for dev. No final purpose
-   useEffect(() => {
-      const printStorage = () => {
-         idRef.current = setTimeout(() => {
-            let savedDataRef = JSON.parse(localStorage.getItem('data') ?? '');
-            console.log('dataRef from storage', savedDataRef);
-            printStorage();
-         }, 60000);
-      };
-      printStorage();
-
-      return () => clearTimeout(idRef.current);
-   }, []);
- */
-
-   //---------------------------------------------------
 
    return (
       <div className='App'>
