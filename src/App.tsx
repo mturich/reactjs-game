@@ -48,7 +48,7 @@ function App() {
    // FROM HERE
 
    const handleTickBtnClick = () => {
-      clockSpeedRef.current = clockSpeedRef.current * (1 - 0.11);
+      clockSpeedRef.current = clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate);
       setGameState((prevGS: GameState) => ({
          ...prevGS,
          antimatter: prevGS.antimatter - prevGS.tickspeedPrice,
@@ -132,7 +132,7 @@ function App() {
          <div className='gridContainer3Rows'>
             <p className='centered'>{`The current clockspeed is ${clockSpeedRef.current.toFixed(
                0
-            )} ms. Reduce the tickspeed by 11%.`}</p>
+            )} ms. Reduce the tickspeed by ${gameState.tickspeedDeceaseRate*100}%.`}</p>
             <div className='centered'>
                <button
                   className='btn'
@@ -169,7 +169,7 @@ function App() {
 
          <hr />
          <br />
-         
+
          <GameResets gameState={gameState} setGameState={setGameState}></GameResets>
       </div>
    );

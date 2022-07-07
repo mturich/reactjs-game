@@ -2,6 +2,7 @@ import { Children } from 'react';
 export interface GameState {
    antimatter: number;
    tickspeedPrice: number;
+   tickspeedDeceaseRate: number,
    resetGameCounter: number;
    galaxyCounter: number;
   // highesDim: number;
