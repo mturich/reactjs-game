@@ -6,6 +6,7 @@ import Tickspeed from './TickSpeed';
 
 import { GameState, Dim } from '../common/GameStateInterface';
 import initialGameState from '../common/initialGameState';
+import DisplayAntimatter from './DisplayAntimatter';
 
 function App() {
    const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
@@ -85,35 +86,8 @@ function App() {
 
    return (
       <div className='App'>
-         <div className='heading'>
-            <p className='centered highlight'>
-               You have{' '}
-               {gameState.antimatter % 1 === 0
-                  ? gameState.antimatter.toFixed(0)
-                  : gameState.antimatter.toFixed(1)}{' '}
-               antimatters.
-            </p>
-         </div>
-
-         {/*      <div className='gridContainer3Rows'>
-            <p className='centered'>{`The current clockspeed is ${clockSpeedRef.current.toFixed(
-               0
-            )} ms. Reduce the tickspeed by ${gameState.tickspeedDeceaseRate*100}%.`}</p>
-            <div className='centered'>
-               <button
-                  className='btn'
-                  onClick={handleTickBtnClick}
-                  disabled={gameState.antimatter - gameState.tickspeedPrice <= 0}>
-                  Cost one time: {gameState.tickspeedPrice}{' '}
-               </button>
-               <button
-                  className='btn'
-                  onClick={handleBuyMaxClick}
-                  disabled={gameState.antimatter - gameState.tickspeedPrice <= 0}>
-                  Buy Max
-               </button>
-            </div>
-         </div> */}
+  
+         <DisplayAntimatter gameState={gameState}/>
 
          <Tickspeed
             gameState={gameState}

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 import { GameState } from "../common/GameStateInterface";
 
-export default function Tickspeed(props) {
+export default function Tickspeed(props: { gameState: GameState; setGameState: any; clockSpeedRef: any; }) {
    const timeIdRef = useRef(-1);
    const canIstillBuyRef = useRef(0);
    const { gameState, setGameState, clockSpeedRef} = props;

@@ -1,6 +1,7 @@
+import { GameState } from '../common/GameStateInterface';
 import initialGameState from '../common/initialGameState';
 
-export default function GameResets(props: { gameState: any; setGameState: any }) {
+export default function GameResets(props: { gameState: GameState; setGameState: any }) {
    const { gameState, setGameState } = props;
 
    const handleResetGameClick = () => {
