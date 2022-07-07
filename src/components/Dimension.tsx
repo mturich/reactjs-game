@@ -1,5 +1,4 @@
-import './Dimentions.css';
-import { GameState, DimProps, Dim } from './common/GameStateInterface';
+import { GameState, DimProps, Dim } from '../common/GameStateInterface';
 
 export default function Dimension(props: DimProps) {
    const { nthDim, gs, setGameState } = props;
@@ -67,7 +66,7 @@ export default function Dimension(props: DimProps) {
                
                `}
             </p>
-            
+
             <button
                className='btn'
                onClick={() => handleDimBuy(1)}

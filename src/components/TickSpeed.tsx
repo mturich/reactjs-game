@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import { GameState } from "./common/GameStateInterface";
+import { GameState } from "../common/GameStateInterface";
 
 export default function Tickspeed(props) {
    const timeIdRef = useRef(-1);

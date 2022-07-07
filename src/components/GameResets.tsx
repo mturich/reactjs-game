@@ -1,4 +1,4 @@
-import initialGameState from './common/initialGameState';
+import initialGameState from '../common/initialGameState';
 
 export default function GameResets(props: { gameState: any; setGameState: any }) {
    const { gameState, setGameState } = props;

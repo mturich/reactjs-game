@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import './App.css';
+import '../styles/App.css';
 import Dimension from './Dimension';
-import initialGameState from './common/initialGameState';
-import { GameState, Dim } from './common/GameStateInterface';
 import GameResets from './GameResets';
 import Tickspeed from './TickSpeed';
+
+import { GameState, Dim } from '../common/GameStateInterface';
+import initialGameState from '../common/initialGameState';
 
 function App() {
    const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
