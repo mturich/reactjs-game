@@ -10,12 +10,14 @@ import DisplayAntimatter from './DisplayAntimatter';
 import { useSaveToLocalStorage } from './useSaveToLocalStorage';
 
 function App() {
-   const [gameState, setGameState] = useState(() => JSON.parse(initialGameState));
+   const [gameState, setGameState] = useState(() =>
+      JSON.parse(localStorage.getItem('data') || initialGameState)
+   );
    /*  JSON.parse(localStorage.getItem('data')) */
    const timerExpiredCallback = useRef(() => {});
    const clockSpeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
-   //useSaveToLocalStorage(gameState)
+   useSaveToLocalStorage(gameState, setGameState);
 
    timerExpiredCallback.current = () => {
       setGameState((prevGS: GameState) => ({
@@ -49,8 +51,7 @@ function App() {
 
    return (
       <div className='App'>
-  
-         <DisplayAntimatter gameState={gameState}/>
+         <DisplayAntimatter gameState={gameState} />
 
          <Tickspeed
             gameState={gameState}
@@ -71,10 +72,33 @@ function App() {
             <Dimension nthDim={2} gs={gameState} setGameState={setGameState}>
                {`Third Dimension Cost: ${gameState.dims[2].dimPrice}`}
             </Dimension>
-
-            // Here have to come all the other dims
          )}
-
+         {gameState.resetGameCounter > 3 && (
+            <Dimension nthDim={3} gs={gameState} setGameState={setGameState}>
+               {`Forth Dimension Cost: ${gameState.dims[2].dimPrice}`}
+            </Dimension>
+         )}
+         {gameState.resetGameCounter > 4 && (
+            <Dimension nthDim={4} gs={gameState} setGameState={setGameState}>
+               {`Fifth Dimension Cost: ${gameState.dims[2].dimPrice}`}
+            </Dimension>
+         )}
+         {gameState.resetGameCounter > 5 && (
+            <Dimension nthDim={5} gs={gameState} setGameState={setGameState}>
+               {`Sixth Dimension Cost: ${gameState.dims[2].dimPrice}`}
+            </Dimension>
+         )}
+         {gameState.resetGameCounter > 6 && (
+            <Dimension nthDim={6} gs={gameState} setGameState={setGameState}>
+               {`Seventh Dimension Cost: ${gameState.dims[2].dimPrice}`}
+            </Dimension>
+         )}
+         {gameState.resetGameCounter > 7 && (
+            <Dimension nthDim={8} gs={gameState} setGameState={setGameState}>
+               {`Eight Dimension Cost: ${gameState.dims[2].dimPrice}`}
+            </Dimension>
+         )}
+         
          <hr />
          <br />
 

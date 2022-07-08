@@ -5,7 +5,7 @@ export interface GameState {
    tickspeedDeceaseRate: number,
    resetGameCounter: number;
    galaxyCounter: number;
-  // highesDim: number;
+   lastSavedTime: number;
    dims: Dim[];
 }
 
