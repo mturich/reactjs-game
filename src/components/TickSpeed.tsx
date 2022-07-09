@@ -10,7 +10,7 @@ export default function Tickspeed(props: {
    const [buyMax, setBuyMax] = useState(
       Math.log10(gameState.antimatter / gameState.tickspeedPrice)
    );
-   const maxPossibleBuys = useRef(~~Math.log10(gameState.antimatter / gameState.tickspeedPrice));
+   // const maxPossibleBuys = useRef(~~Math.log10(gameState.antimatter / gameState.tickspeedPrice));
    const handleTickBtnClick = () => {
       clockSpeedRef.current = clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate);
       setGameState((prevGS: GameState) => ({
@@ -20,27 +20,37 @@ export default function Tickspeed(props: {
       }));
    };
 
-   useEffect(() => {
-      const getCostForPurchaseQtyRecursive = (price: number, antimatter: number, quantity = 0) => {
-         if (antimatter < price) {
-            return quantity;
-         } else {
-            return getCostForPurchaseQtyRecursive(price * 10, antimatter - price, quantity + 1);
-         }
-      };
-
-      maxPossibleBuys.current = getCostForPurchaseQtyRecursive(
-         gameState.tickspeedPrice,
-         gameState.antimatter,
-         0
-      );
-   }, [gameState]);
-
-   const handleBuyMaxClick = () => {
-      for (let i = 0; i < maxPossibleBuys.current; i++) {
-         handleTickBtnClick();
+   const getMaxPurchaseQtyRecursive = (price: number, antimatter: number, quantity = 0): number => {
+      if (antimatter < price) {
+         return quantity
+      } else {
+         return getMaxPurchaseQtyRecursive(price * 10, antimatter - price, quantity + 1);
       }
    };
+
+   const maxPurchasableQuantity = getMaxPurchaseQtyRecursive(
+      gameState.tickspeedPrice,
+      gameState.antimatter,
+      0
+   );
+
+   const getCostForPurchaseQty = (firstCost: number, quantity: number): number => {
+      if (quantity == 1) {
+         return firstCost;
+      } else {
+         return firstCost + getCostForPurchaseQty(firstCost * 10, quantity - 1); 
+      } 
+   }
+
+   const handleBuyMaxClick = () => {
+      clockSpeedRef.current = clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate) ** maxPurchasableQuantity;
+      setGameState((prevGS: GameState) => ({
+         ...prevGS,
+         antimatter: prevGS.antimatter - getCostForPurchaseQty(maxPurchasableQuantity, prevGS.tickspeedPrice),
+         tickspeedPrice: prevGS.tickspeedPrice * 10 ** maxPurchasableQuantity,
+      }));
+   };
+
 
    return (
       <div className='gridContainer3Rows'>
@@ -58,7 +68,7 @@ export default function Tickspeed(props: {
                className='btn'
                onClick={handleBuyMaxClick}
                disabled={gameState.antimatter < gameState.tickspeedPrice}>
-               Buy Max ({maxPossibleBuys.current})
+               Buy Max ({maxPurchasableQuantity})
             </button>
          </div>
       </div>
