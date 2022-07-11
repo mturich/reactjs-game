@@ -1,13 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import '../styles/App.css';
-import Dimension from './Dimension';
-import GameResets from './GameResets';
-import Tickspeed from './TickSpeed';
+import Dimension from './Dimention/Dimension';
+import GameResets from './GameResetBtns/GameResets';
+import Tickspeed from './Tickspeed/TickSpeed';
 
 import { GameState, Dim } from '../common/GameStateInterface';
 import initialGameState from '../common/initialGameState';
-import DisplayAntimatter from './DisplayAntimatter';
-import { useSaveToLocalStorage } from './useSaveToLocalStorage';
+import DisplayAntimatter from './DisplayAntimatter/DisplayAntimatter';
+import { useLocalStorage } from '../customeHooks/useLocalStorage';
 
 function App() {
    const [gameState, setGameState] = useState(() =>
@@ -17,7 +17,7 @@ function App() {
    const timerExpiredCallback = useRef(() => {});
    const clockSpeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
-   useSaveToLocalStorage(gameState, setGameState);
+   useLocalStorage(gameState, setGameState);
 
    timerExpiredCallback.current = () => {
       setGameState((prevGS: GameState) => ({

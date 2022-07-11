@@ -1,4 +1,4 @@
-import { GameState } from '../common/GameStateInterface';
+import { GameState } from '../../common/GameStateInterface';
 
 export default function DisplayAntimatter(props: { gameState: GameState }) {
    const { gameState } = props;

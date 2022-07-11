@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import { GameState } from '../common/GameStateInterface';
-import initialGameState from '../common/initialGameState';
+import { GameState } from '../../common/GameStateInterface';
+import initialGameState from '../../common/initialGameState';
 
 export default function GameResets(props: { gameState: GameState; setGameState: any }) {
    const { gameState, setGameState } = props;

@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
-import { GameState } from '../common/GameStateInterface';
+import { GameState } from '../../common/GameStateInterface';
+import { getCostForPurchaseQty } from './getCostForPurchaseQty';
+import { maxPurchaseQty } from './maxPurchaseQty';
 
 export default function Tickspeed(props: {
    gameState: GameState;
@@ -20,37 +22,31 @@ export default function Tickspeed(props: {
       }));
    };
 
-   const getMaxPurchaseQtyRecursive = (price: number, antimatter: number, quantity = 0): number => {
-      if (antimatter < price) {
-         return quantity
-      } else {
-         return getMaxPurchaseQtyRecursive(price * 10, antimatter - price, quantity + 1);
-      }
-   };
+   const maxPurchasableQuantity = maxPurchaseQty({
+      cost: gameState.tickspeedPrice,
+      balance: gameState.antimatter,
+      qty: 0,
+   });
 
-   const maxPurchasableQuantity = getMaxPurchaseQtyRecursive(
-      gameState.tickspeedPrice,
-      gameState.antimatter,
-      0
-   );
-
-   const getCostForPurchaseQty = (firstCost: number, quantity: number): number => {
+ /*   const getCostForPurchaseQty = (firstCost: number, quantity: number): number => {
       if (quantity == 1) {
          return firstCost;
       } else {
-         return firstCost + getCostForPurchaseQty(firstCost * 10, quantity - 1); 
-      } 
-   }
+         return firstCost + getCostForPurchaseQty(firstCost * 10, quantity - 1);
+      }
+   }; */
 
    const handleBuyMaxClick = () => {
-      clockSpeedRef.current = clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate) ** maxPurchasableQuantity;
+      clockSpeedRef.current =
+         clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate) ** maxPurchasableQuantity;
       setGameState((prevGS: GameState) => ({
          ...prevGS,
-         antimatter: prevGS.antimatter - getCostForPurchaseQty(maxPurchasableQuantity, prevGS.tickspeedPrice),
+         antimatter:
+            prevGS.antimatter -
+            getCostForPurchaseQty(maxPurchasableQuantity, prevGS.tickspeedPrice),
          tickspeedPrice: prevGS.tickspeedPrice * 10 ** maxPurchasableQuantity,
       }));
    };
-
 
    return (
       <div className='gridContainer3Rows'>

@@ -1,4 +1,4 @@
-import { GameState, DimProps, Dim } from '../common/GameStateInterface';
+import { GameState, DimProps, Dim } from '../../common/GameStateInterface';
 
 export default function Dimension(props: DimProps) {
    const { nthDim, gs, setGameState } = props;

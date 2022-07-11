@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Dim, GameState } from '../common/GameStateInterface';
 
-export function useSaveToLocalStorage(gameState: GameState, setGameState) {
+export function useLocalStorage(gameState: GameState, setGameState:Function):void {
    const saveLocStorageRef = useRef(-1);
    const displayLocStorageRef = useRef(-1);
 
@@ -21,6 +21,7 @@ export function useSaveToLocalStorage(gameState: GameState, setGameState) {
       saveDateRecursive(gameState);
 
    }, [gameState]);
+   
 
    // this prints the saved object from local storage. It is just for dev. No final purpose
    /*  useEffect(() => {
