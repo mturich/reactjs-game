@@ -1,56 +1,47 @@
 import { useRef, useEffect, useState } from 'react';
 import { GameState } from '../../common/GameStateInterface';
 import { getCostForPurchaseQty } from './getCostForPurchaseQty';
-import { maxPurchaseQty } from './maxPurchaseQty';
+import { calcMaxPurchasableQty } from './calcMaxPurchasableQty';
 
 export default function Tickspeed(props: {
    gameState: GameState;
-   setGameState: any;
-   clockSpeedRef: any;
+   setGameState: Function;
+   tickspeedRef: any;
 }) {
-   const { gameState, setGameState, clockSpeedRef } = props;
+   const { gameState, setGameState, tickspeedRef } = props;
    const [buyMax, setBuyMax] = useState(
       Math.log10(gameState.antimatter / gameState.tickspeedPrice)
    );
-   // const maxPossibleBuys = useRef(~~Math.log10(gameState.antimatter / gameState.tickspeedPrice));
+
+   // calculte the maximal purchasable
+   const maxPurchaseQtys = calcMaxPurchasableQty({
+      cost: gameState.tickspeedPrice,
+      balance: gameState.antimatter,
+      qty: 0,
+   });
+   const purchasePrice = getCostForPurchaseQty(gameState.tickspeedPrice, maxPurchaseQtys);
+   
    const handleTickBtnClick = () => {
-      clockSpeedRef.current = clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate);
+      tickspeedRef.current = tickspeedRef.current * (1 - gameState.tickspeedDeceaseRate);
       setGameState((prevGS: GameState) => ({
          ...prevGS,
          antimatter: prevGS.antimatter - prevGS.tickspeedPrice,
          tickspeedPrice: prevGS.tickspeedPrice * 10,
       }));
    };
-
-   const maxPurchasableQuantity = maxPurchaseQty({
-      cost: gameState.tickspeedPrice,
-      balance: gameState.antimatter,
-      qty: 0,
-   });
-
- /*   const getCostForPurchaseQty = (firstCost: number, quantity: number): number => {
-      if (quantity == 1) {
-         return firstCost;
-      } else {
-         return firstCost + getCostForPurchaseQty(firstCost * 10, quantity - 1);
-      }
-   }; */
-
    const handleBuyMaxClick = () => {
-      clockSpeedRef.current =
-         clockSpeedRef.current * (1 - gameState.tickspeedDeceaseRate) ** maxPurchasableQuantity;
+      tickspeedRef.current =
+         tickspeedRef.current * (1 - gameState.tickspeedDeceaseRate) ** maxPurchaseQtys;
       setGameState((prevGS: GameState) => ({
          ...prevGS,
-         antimatter:
-            prevGS.antimatter -
-            getCostForPurchaseQty(maxPurchasableQuantity, prevGS.tickspeedPrice),
-         tickspeedPrice: prevGS.tickspeedPrice * 10 ** maxPurchasableQuantity,
+         antimatter: prevGS.antimatter - purchasePrice,
+         tickspeedPrice: prevGS.tickspeedPrice * 10 ** maxPurchaseQtys,
       }));
    };
 
    return (
       <div className='gridContainer3Rows'>
-         <p className='centered'>{`The current clockspeed is ${clockSpeedRef.current.toFixed(
+         <p className='centered'>{`The current clockspeed is ${tickspeedRef.current.toFixed(
             0
          )} ms. Reduce the tickspeed by ${gameState.tickspeedDeceaseRate * 100}%.`}</p>
          <div className='centered'>
@@ -64,7 +55,7 @@ export default function Tickspeed(props: {
                className='btn'
                onClick={handleBuyMaxClick}
                disabled={gameState.antimatter < gameState.tickspeedPrice}>
-               Buy Max ({maxPurchasableQuantity})
+               Buy Max ({maxPurchaseQtys})
             </button>
          </div>
       </div>

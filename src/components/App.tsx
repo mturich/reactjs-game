@@ -3,19 +3,18 @@ import '../styles/App.css';
 import Dimension from './Dimention/Dimension';
 import GameResets from './GameResetBtns/GameResets';
 import Tickspeed from './Tickspeed/TickSpeed';
+import DisplayAntimatter from './DisplayAntimatter/DisplayAntimatter';
+import initialGameState from '../common/initialGameState';
 
 import { GameState, Dim } from '../common/GameStateInterface';
-import initialGameState from '../common/initialGameState';
-import DisplayAntimatter from './DisplayAntimatter/DisplayAntimatter';
 import { useLocalStorage } from '../customeHooks/useLocalStorage';
 
 function App() {
    const [gameState, setGameState] = useState(() =>
       JSON.parse(localStorage.getItem('data') || initialGameState)
    );
-   /*  JSON.parse(localStorage.getItem('data')) */
    const timerExpiredCallback = useRef(() => {});
-   const clockSpeedRef = useRef(2000);
+   const tickspeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
    useLocalStorage(gameState, setGameState);
 
@@ -41,7 +40,7 @@ function App() {
          timerIdRef.current = setTimeout(() => {
             timerExpiredCallback.current();
             startTimer();
-         }, clockSpeedRef.current);
+         }, tickspeedRef.current);
       };
       startTimer();
 
@@ -56,7 +55,7 @@ function App() {
          <Tickspeed
             gameState={gameState}
             setGameState={setGameState}
-            clockSpeedRef={clockSpeedRef}></Tickspeed>
+            tickspeedRef={tickspeedRef}></Tickspeed>
 
          <Dimension nthDim={0} gs={gameState} setGameState={setGameState}>
             {`First Dimension Cost: ${gameState.dims[0].dimPrice}`}
@@ -98,7 +97,7 @@ function App() {
                {`Eight Dimension Cost: ${gameState.dims[2].dimPrice}`}
             </Dimension>
          )}
-         
+
          <hr />
          <br />
 
