@@ -1,49 +1,21 @@
-import { GameState, DimProps, Dim } from '../../common/GameStateInterface';
+import { DimProps } from '../../common/GameStateInterface';
+import { ACTIONS } from '../App';
 
 export default function Dimension(props: DimProps) {
-   const { nthDim, gs, setGameState } = props;
+   const { nthDim, gs, dispatch } = props;
 
    const handleDimBuy = (quantity: number) => {
-      const newDim = [gs.dims[nthDim].dimCount + quantity];
-
       if (gs.antimatter >= gs.dims[nthDim].dimPrice) {
-         /*    
-         setDimCount(dimCount => dimCount + quantity);
-         setAntimatter(prevValue => prevValue - price * quantity);
-         setDimFactorCount(prevCount => prevCount + 1); */
-         setGameState((prevGS: GameState) => ({
-            ...prevGS,
-            antimatter: prevGS.antimatter - prevGS.dims[nthDim].dimPrice * quantity,
-            dims: prevGS.dims.map((dim: Dim, index: number) => {
-               if (dim.nthDim !== nthDim) return dim;
-               return {
-                  ...dim,
-                  dimCount: dim.dimCount + quantity,
-                  dimFactorCount: dim.dimFactorCount + quantity,
-               };
-            }),
-         }));
+         dispatch({ type: ACTIONS.UPDATE_DIM, payload: { nthDim: nthDim, quantity: quantity } });
       }
       if (
          ((gs.dims[nthDim].dimCount + 1) % 10 === 0 && gs.dims[nthDim].dimCount > 1) ||
          quantity === 10
       ) {
-         /*          
-         setPrice(prevPrice => prevPrice * 10);
-         setFactor(prevFactor => prevFactor * 2)
-         setDimFactorCount(0) */
-         setGameState((prevGS: GameState) => ({
-            ...prevGS,
-            dims: prevGS.dims.map((dim: Dim, index: number) => {
-               if (dim.nthDim !== nthDim) return dim;
-               return {
-                  ...dim,
-                  dimPrice: dim.dimPrice * 10,
-                  dimFactor: dim.dimFactor * 2,
-                  dimFactorCount: 0,
-               };
-            }),
-         }));
+         dispatch({
+            type: ACTIONS.UPDATE_10TH_DIM,
+            payload: { nthDim: nthDim, quantity: quantity },
+         });
       }
    };
 

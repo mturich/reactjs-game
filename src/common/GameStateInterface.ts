@@ -20,6 +20,6 @@ export interface Dim {
 export type DimProps = {
    nthDim: number;
    gs: GameState;
-   setGameState: (fn: (gameState: GameState) => void) => void;
+   dispatch: Function;
    children: string;
 };
