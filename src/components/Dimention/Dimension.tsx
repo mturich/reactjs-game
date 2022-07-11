@@ -1,5 +1,5 @@
 import { DimProps } from '../../common/GameStateInterface';
-import { ACTIONS } from '../App';
+import { ACTIONS } from '../../common/reducer';
 
 export default function Dimension(props: DimProps) {
    const { nthDim, gs, dispatch } = props;

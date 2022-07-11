@@ -1,60 +1,49 @@
 import { useEffect, useRef } from 'react';
 import { GameState } from '../../common/GameStateInterface';
 import initialGameState from '../../common/initialGameState';
+import { ACTIONS } from '../../common/reducer';
 
-export default function GameResets(props: { gameState: GameState; setGameState: any }) {
-   const { gameState, setGameState } = props;
-   const resetGameCounterRef = useRef(gameState.resetGameCounter);
+export default function GameResets(props: { gs: GameState; dispatch: Function }) {
+   const { gs, dispatch } = props;
+   const resetGameCounterRef = useRef(gs.resetGameCounter);
 
    useEffect(() => {
-      resetGameCounterRef.current = gameState.resetGameCounter;
-   }, [gameState.resetGameCounter]);
+      resetGameCounterRef.current = gs.resetGameCounter;
+   }, [gs.resetGameCounter]);
 
    const handleResetGameClick = () => {
-      setGameState((prevGS: GameState) => ({
-         ...JSON.parse(initialGameState),
-         galaxyCounter: prevGS.galaxyCounter,
-         resetGameCounter: prevGS.resetGameCounter + 1,
-         lastSavedTime: prevGS.lastSavedTime,
-      }));
+      dispatch({ type: ACTIONS.RESET_TO_UNLOCK_DIM });
    };
 
    const handleGalaxyBtn = () => {
-      setGameState((prevGS: GameState) => ({
-         ...JSON.parse(initialGameState),
-         galaxyCounter: prevGS.galaxyCounter + 1,
-         tickspeedDeceaseRate: 0.12,
-         resetGameCounter: prevGS.resetGameCounter,
-         lastSavedTime: prevGS.lastSavedTime,
-      }));
+      dispatch({ type: ACTIONS.RESET_TO_UNLOCK_TICKSPEED });
    };
 
    const disableResetBtn = () => {
-      if (
-         gameState.resetGameCounter < 7 &&
-         gameState.dims[gameState.resetGameCounter - 1].dimCount < 20
-      )
-         return true;
+      if (gs.resetGameCounter < 7 && gs.dims[gs.resetGameCounter - 1].dimCount < 20) return true;
       else return false;
    };
 
    return (
       <>
          <div className='gridContainer4Cols cols-2'>
-            <p className=''>{`Dimension Shift (${gameState.resetGameCounter})  `}</p>
-            <p className=''>{`requires 20 ${gameState.resetGameCounter}. Dimension `}</p>
-            <button className='btn ' onClick={handleResetGameClick} disabled={(gameState.resetGameCounter < 7 &&
-         gameState.dims[gameState.resetGameCounter - 1].dimCount < 20) ? true : false}>
+            <p className=''>{`Dimension Shift (${gs.resetGameCounter})  `}</p>
+            <p className=''>{`requires 20 ${gs.resetGameCounter}. Dimension `}</p>
+            <button
+               className='btn '
+               onClick={handleResetGameClick}
+               disabled={
+                  gs.resetGameCounter < 7 && gs.dims[gs.resetGameCounter - 1].dimCount < 20
+                     ? true
+                     : false
+               }>
                Reset game to get new dimension
             </button>
          </div>
          <div className='gridContainer4Cols cols-2'>
-            <p className=''>{`Antimatter Galaxies (${gameState.galaxyCounter})`}</p>
+            <p className=''>{`Antimatter Galaxies (${gs.galaxyCounter})`}</p>
             <p className=''>{`requires 80 8. Dimension `}</p>
-            <button
-               className='btn'
-               onClick={handleGalaxyBtn}
-               disabled={gameState.dims[7].dimCount < 80}>
+            <button className='btn' onClick={handleGalaxyBtn} disabled={gs.dims[7].dimCount < 80}>
                Increase Tickspeed bump to 12%
             </button>
          </div>
@@ -63,7 +52,7 @@ export default function GameResets(props: { gameState: GameState; setGameState: 
             <p className=''>{`resets everything`}</p>
             <button
                className='btn'
-               onClick={() => setGameState(JSON.parse(initialGameState))}
+               onClick={() => dispatch({ type: ACTIONS.RESET_TO_INITIAL_VALUES })}
                disabled={false}>
                Resets game
             </button>

@@ -6,64 +6,8 @@ import Tickspeed from './Tickspeed/TickSpeed';
 import DisplayAntimatter from './DisplayAntimatter/DisplayAntimatter';
 import initialGameState from '../common/initialGameState';
 
-import { GameState, Dim } from '../common/GameStateInterface';
 import { useLocalStorage } from '../customeHooks/useLocalStorage';
-
-export const ACTIONS = {
-   TIMER_CALLBACK: 'TIMER_CALLBACK',
-   UPDATE_DIM: 'UPDATE_DIM',
-   UPDATE_10TH_DIM: 'UPDATE_10TH_DIM',
-};
-
-function reducer(state: GameState, action: { type: string; payload?: any }) {
-   switch (action.type) {
-      case ACTIONS.TIMER_CALLBACK:
-         return {
-            ...state,
-            antimatter: state.antimatter + state.dims[0].dimCount * state.dims[0].dimFactor,
-            dims: state.dims.map((dim: Dim, index: number) => {
-               return {
-                  ...dim,
-                  dimCount:
-                     dim.dimCount +
-                     ((state.dims[index + 1]?.dimCount ?? 0) *
-                        (state.dims[index + 1]?.dimFactor ?? 0)) /
-                        Math.pow(10, index + 1),
-               };
-            }),
-         };
-      case ACTIONS.UPDATE_DIM:
-         return {
-            ...state,
-            antimatter:
-               state.antimatter -
-               state.dims[action.payload.nthDim].dimPrice * action.payload.quantity,
-            dims: state.dims.map((dim: Dim) => {
-               if (dim.nthDim !== action.payload.nthDim) return dim;
-               return {
-                  ...dim,
-                  dimCount: dim.dimCount + action.payload.quantity,
-                  dimFactorCount: dim.dimFactorCount + action.payload.quantity,
-               };
-            }),
-         };
-      case ACTIONS.UPDATE_10TH_DIM:
-         return {
-            ...state,
-            dims: state.dims.map((dim: Dim) => {
-               if (dim.nthDim !== action.payload.nthDim) return dim;
-               return {
-                  ...dim,
-                  dimPrice: dim.dimPrice * 10,
-                  dimFactor: dim.dimFactor * 2,
-                  dimFactorCount: 0,
-               };
-            }),
-         };
-      default:
-         return state;
-   }
-}
+import { ACTIONS, reducer } from '../common/reducer';
 
 function App() {
    const [state, dispatch] = useReducer(
@@ -94,11 +38,11 @@ function App() {
    return (
       <div className='App'>
          <DisplayAntimatter gameState={state} />
-         {/* 
+
          <Tickspeed
-            gameState={state}
+            gs={state} // gs = gamestate
             dispatch={dispatch}
-            tickspeedRef={tickspeedRef}></Tickspeed> */}
+            tickspeedRef={tickspeedRef}></Tickspeed>
 
          <Dimension nthDim={0} gs={state} dispatch={dispatch}>
             {`First Dimension Cost: ${state.dims[0].dimPrice}`}
@@ -144,7 +88,7 @@ function App() {
          <hr />
          <br />
 
-         {/* <GameResets gameState={state} dispatch={dispatch}></GameResets> */}
+         <GameResets gs={state} dispatch={dispatch}></GameResets>
       </div>
    );
 }
