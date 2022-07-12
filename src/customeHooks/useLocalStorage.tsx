@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { Dim, GameState } from '../common/GameStateInterface';
+import { ACTIONS } from '../common/reducer';
 
-export function useLocalStorage(gameState: GameState, setGameState:Function):void {
+export function useLocalStorage(gameState: GameState, dispatch: Function): void {
    const saveLocStorageRef = useRef(-1);
    const displayLocStorageRef = useRef(-1);
 
@@ -9,31 +10,12 @@ export function useLocalStorage(gameState: GameState, setGameState:Function):voi
 
    useEffect(() => {
       const saveDateRecursive = (gameState: GameState) => {
-         if (Date.now() > gameState.lastSavedTime + 60 * 1000) {
+         if (Date.now() > gameState.lastSavedTime + 5 * 60 * 1000) {
             localStorage.setItem('data', JSON.stringify(gameState));
             console.log('data saved', gameState.lastSavedTime);
-            setGameState((prevGS: GameState) => ({
-               ...prevGS,
-               lastSavedTime: Date.now(),
-            }));
+            dispatch({ type: ACTIONS.SAVE_DATA });
          }
       };
       saveDateRecursive(gameState);
-
    }, [gameState]);
-   
-
-   // this prints the saved object from local storage. It is just for dev. No final purpose
-   /*  useEffect(() => {
-      const printStorage = () => {
-         displayLocStorageRef.current = setTimeout(() => {
-            let savedData= JSON.parse(localStorage.getItem('data') ?? '');
-            console.log('dataRef from storage', savedData);
-            printStorage();
-         }, 10000);
-      };
-      printStorage();
-
-      return () => clearTimeout(displayLocStorageRef.current);
-   }, []); */
 }

@@ -10,6 +10,8 @@ export const ACTIONS = {
    RESET_TO_UNLOCK_DIM: 'RESET_TO_UNLOCK_DIM',
    RESET_TO_UNLOCK_TICKSPEED: 'RESET_TO_UNLOCK_TICKSPEED',
    RESET_TO_INITIAL_VALUES: 'RESET_TO_INITIAL_VALUES',
+   POP_UP: 'POP_UP',
+   SAVE_DATA: 'SAVE_DATA',
 };
 
 export function reducer(state: GameState, action: { type: string; payload?: any }) {
@@ -77,6 +79,7 @@ export function reducer(state: GameState, action: { type: string; payload?: any 
          return {
             ...JSON.parse(initialGameState),
             galaxyCounter: state.galaxyCounter,
+            tickspeedDeceaseRate: state.tickspeedDeceaseRate,
             resetGameCounter: state.resetGameCounter + 1,
             lastSavedTime: state.lastSavedTime,
          };
@@ -85,13 +88,19 @@ export function reducer(state: GameState, action: { type: string; payload?: any 
          return {
             ...JSON.parse(initialGameState),
             galaxyCounter: state.galaxyCounter + 1,
-            tickspeedDeceaseRate: 0.12,
-            resetGameCounter: state.resetGameCounter,
+            tickspeedDeceaseRate: state.tickspeedDeceaseRate * 1.1,
             lastSavedTime: state.lastSavedTime,
          };
 
       case ACTIONS.RESET_TO_INITIAL_VALUES:
          return JSON.parse(initialGameState);
+
+      case ACTIONS.SAVE_DATA:
+         return {
+            ...state,
+            lastSavedTime: Date.now(),
+         };
+
       default:
          return state;
    }

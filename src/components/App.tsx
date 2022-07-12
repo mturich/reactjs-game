@@ -14,7 +14,7 @@ function App() {
       reducer,
       JSON.parse(localStorage.getItem('data') || initialGameState)
    );
-
+   const [saveTag, setSaveTag] = useState('gameSaved centered');
    const timerExpiredCallback = useRef(() => {});
    const tickspeedRef = useRef(2000);
    const timerIdRef = useRef(-1);
@@ -24,7 +24,7 @@ function App() {
 
    useEffect(() => {
       const startTimer = () => {
-         timerIdRef.current = setTimeout(() => {
+         timerIdRef.current = window.setTimeout(() => {
             timerExpiredCallback.current();
             startTimer();
          }, tickspeedRef.current);
@@ -34,10 +34,26 @@ function App() {
       // if we ever unmount / destroy this component instance, clear the timeout
       return () => clearTimeout(timerIdRef.current);
    }, []);
+   /*    const classesSnackbar = clsx({
+      "gameSaved": true,
+      "centered": true,
+      "visible": Date.now() <= state.lastSavedTime + 3 * 1000 ? true: false,
+   }) */
+
+   useEffect(() => {
+      if (Date.now() <= state.lastSavedTime + 3 * 1000) setSaveTag('gameSaved centered visible');
+      else setSaveTag('gameSaved centered');
+   });
 
    return (
       <div className='App'>
          <DisplayAntimatter gameState={state} />
+
+         <div className='snackbar-overlay '>
+            <div className={saveTag}>
+               <div>Game saved!</div>
+            </div>
+         </div>
 
          <Tickspeed
             gs={state} // gs = gamestate
@@ -94,3 +110,6 @@ function App() {
 }
 
 export default App;
+function clsx(arg0: any) {
+   throw new Error('Function not implemented.');
+}

@@ -6,7 +6,7 @@ let initialGameState: GameState = {
    tickspeedDeceaseRate: 0.11,
    resetGameCounter: 2,
    galaxyCounter: 0,
-   lastSavedTime: 0,
+   lastSavedTime: Date.now(),
    dims: [
       {
          nthDim: 0,

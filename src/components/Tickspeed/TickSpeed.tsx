@@ -32,7 +32,7 @@ export default function Tickspeed(props: { gs: GameState; dispatch: Function; ti
       <div className='gridContainer3Rows'>
          <p className='centered'>{`The current clockspeed is ${tickspeedRef.current.toFixed(
             0
-         )} ms. Reduce the tickspeed by ${gs.tickspeedDeceaseRate * 100}%.`}</p>
+         )} ms. Reduce the tickspeed by ${(gs.tickspeedDeceaseRate* 100).toFixed(1)}%.`}</p>
          <div className='centered'>
             <button
                className='btn'
