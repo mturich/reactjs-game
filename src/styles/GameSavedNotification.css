@@ -1,0 +1,55 @@
+* {
+   box-sizing: border-box;
+}
+
+.snackbar-overlay {
+   position: fixed;
+   left: 0;
+   bottom: 0;
+   top: 0;
+   right: 0;
+   z-index: -1;
+}
+
+.snackbar {
+   position: absolute;
+   z-index: 1000;
+   top: 2%;
+   right: 7%;
+   transform: translateX(50%);
+   height: auto;
+   padding: 0.625rem 1rem;
+   border-radius: 0.75rem;
+   border: transparent;
+   background-color: hsl(200, 100%, 65%);
+   color: white;
+   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
+
+   animation: fadein 1s, fadeout 1s 3s;
+}
+
+@keyframes fadein {
+   from {
+      top: 0;
+      opacity: 0;
+   }
+   to {
+      top: 2%;
+      opacity: 1;
+   }
+}
+
+@keyframes fadeout {
+   from {
+      top: 2%;
+      opacity: 1;
+   }
+   to {
+      top: 0;
+      opacity: 0;
+   }
+}
