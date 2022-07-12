@@ -3,8 +3,8 @@ import { Dim, GameState } from '../common/GameStateInterface';
 import { ACTIONS } from '../common/reducer';
 
 export function useLocalStorage(gameState: GameState, dispatch: Function): void {
-   const saveLocStorageRef = useRef(-1);
-   const displayLocStorageRef = useRef(-1);
+   //const saveLocStorageRef = useRef(-1);
+   //const displayLocStorageRef = useRef(-1);
 
    // saves the created object every minuit to localStorage
 

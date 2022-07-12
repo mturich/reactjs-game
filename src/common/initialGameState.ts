@@ -7,6 +7,7 @@ let initialGameState: GameState = {
    resetGameCounter: 2,
    galaxyCounter: 0,
    lastSavedTime: Date.now(),
+   showGameSavedNotification: false,
    dims: [
       {
          nthDim: 0,

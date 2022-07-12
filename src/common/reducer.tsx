@@ -12,6 +12,8 @@ export const ACTIONS = {
    RESET_TO_INITIAL_VALUES: 'RESET_TO_INITIAL_VALUES',
    POP_UP: 'POP_UP',
    SAVE_DATA: 'SAVE_DATA',
+   TOOGLE_GAME_NOTIFICATION_OPEN: 'TOOGLE_GAME_NOTIFICATION_OPEN',
+   TOOGLE_GAME_NOTIFICATION_CLOSE: 'TOOGLE_GAME_NOTIFICATION_CLOSE',
 };
 
 export function reducer(state: GameState, action: { type: string; payload?: any }) {
@@ -100,6 +102,19 @@ export function reducer(state: GameState, action: { type: string; payload?: any 
             ...state,
             lastSavedTime: Date.now(),
          };
+
+      case ACTIONS.TOOGLE_GAME_NOTIFICATION_CLOSE: {
+         return {
+            ...state,
+            showGameSavedNotification: false,
+         };
+      }
+      case ACTIONS.TOOGLE_GAME_NOTIFICATION_OPEN: {
+         return {
+            ...state,
+            showGameSavedNotification: true,
+         };
+      }
 
       default:
          return state;
