@@ -13,7 +13,7 @@ import GameSavedNotification from './GameSavedNotification/GameSavedNotification
 function App() {
    const [state, dispatch] = useReducer(
       reducer,
-      JSON.parse(localStorage.getItem('data') || initialGameState)
+      JSON.parse(localStorage.getItem('datas') || initialGameState)
    );
    const timerExpiredCallback = useRef(() => {});
    const tickspeedRef = useRef(2000);
