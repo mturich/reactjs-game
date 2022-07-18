@@ -1,5 +1,18 @@
+/* import react from '@vitejs/plugin-react';
+import { defineConfig } from 'vitest/config';
+
+// https://vitejs.dev/config/
+export default defineConfig({
+   plugins: [react()],
+   test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: './setupTest.ts',
+   },
+});
+ */
+
 /// <reference types="vitest" />
-/// <reference types="vite/client" />
 
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
@@ -8,7 +21,8 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
    test: {
       globals: true,
-      setupFiles: 'setupTest.ts',
+      environment: 'jsdom',
+      setupFiles: './src/components/__test__/setupTest.ts',
    },
    plugins: [react()],
 });

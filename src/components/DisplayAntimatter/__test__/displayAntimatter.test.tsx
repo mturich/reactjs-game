@@ -1,6 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
+import '@testing-library/jest-dom';
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 
@@ -13,6 +14,5 @@ describe('DisplayAntimatter', () => {
       const gs: GameState = JSON.parse(initialGameState);
       render(<DisplayAntimatter gameState={gs} />);
       expect(screen.getByText(/You/i)).toBeInTheDocument();
-      screen.debug();
    });
 });
